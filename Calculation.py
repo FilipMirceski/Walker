@@ -1,40 +1,33 @@
 import bpy
 
 
+def main(context):
+    print ("filipe")
+    print ("jkdfjajkfjkadjfaskjfjkasdk")
+    print ("uspeo si svaka cast")
 
 
-def createmat(context):
-    
-    a = 5
-    b = 3
-    c = a + b
 
-    print("Kako si filipe")
-    print(c)
-
-    return c
-
-
-class CreateBSDF(bpy.types.Operator):#create material
+class SimpleOperator(bpy.types.Operator):
     """Tooltip"""
-    bl_idname = "object.createbsdf"
-    bl_label = "Create Principled BSDF"
+    bl_idname = "object.simple_operator"
+    bl_label = "Simple Object Operator"
 
-    #@classmethod
-    #def poll(cls, context):
-    #    return context.active_object is not None
+    @classmethod
+    def poll(cls, context):
+        return context.active_object is not None
 
     def execute(self, context):
-        createmat(context)
+        main(context)
         return {'FINISHED'}
 
 
 def register():
-    bpy.utils.register_class(CreateBSDF)
+    bpy.utils.register_class(SimpleOperator)
 
 
 def unregister():
-    bpy.utils.unregister_class(CreateBSDF)
+    bpy.utils.unregister_class(SimpleOperator)
 
 
 if __name__ == "__main__":

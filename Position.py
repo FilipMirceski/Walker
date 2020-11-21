@@ -23,3 +23,14 @@ print("Second Keyframe at "+str(keyframe02_frame)+" frame, with value "+str(keyf
 print("Third Keyframe at "+str(keyframe03_frame)+" frame, with value "+str(keyframe03_value))
 
 print("And Lenght of Your curve is "+str(curveLenght))
+
+
+def register():
+    ...
+
+def unregister():
+    ...
+
+
+if __name__ == "__main__":
+	register()
