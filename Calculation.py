@@ -1,10 +1,34 @@
 import bpy
+import math
+
+a = [(1,2),(3,5),(5,6),(7,8)]
+b = [1,3,3,45,4,5,3,345,5,4,2,0,4,3,3,2,1,2,43,5]
+
+
 
 
 def main(context):
-    print ("filipe")
-    print ("jkdfjajkfjkadjfaskjfjkasdk")
     print ("uspeo si svaka cast")
+    print (a[1][1])
+    print ("test niz")
+    #x = b.index(3)
+    indexes = [i for i,x in enumerate(b) if x == 3]
+    print (indexes)
+
+x1 = 10
+y1 = 0
+x2 = 25
+y2 =0
+
+
+
+
+#funkcija za izracunavanje duzinu koraka
+def distance(x1,y1,x2,y2):
+    dist = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+    #dist = math.hypot(x2 - x1, y2 - y1)
+    print (dist)
+    return dist
 
 
 
@@ -19,6 +43,7 @@ class SimpleOperator(bpy.types.Operator):
 
     def execute(self, context):
         main(context)
+        distance(x1,y1,x2,y2)
         return {'FINISHED'}
 
 
