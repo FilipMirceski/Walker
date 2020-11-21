@@ -11,6 +11,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from . import Walker_UI_Blender
+
 bl_info = {
     "name" : "Walker",
     "author" : "keki_filip",
@@ -23,7 +25,11 @@ bl_info = {
 }
 
 def register():
-    ...
+    Walker_UI_Blender.register()
 
 def unregister():
-    ...
+    Walker_UI_Blender.unregister()
+
+
+if __name__ == "__main__":
+	register()
