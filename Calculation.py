@@ -1,6 +1,7 @@
 import bpy
 import math
 
+
 a = [(1,2),(3,5),(5,6),(7,8)]
 b = [1,3,3,45,4,5,3,345,5,4,2,0,4,3,3,2,1,2,43,5]
 
@@ -19,6 +20,17 @@ x1 = 10
 y1 = 0
 x2 = 25
 y2 =0
+
+def pozicija(context):
+
+    a = [1, 2, 3, 4, 5]
+    frameRange = int(bpy.data.actions['CubeDance'].frame_range[1])
+    cube=bpy.data.objects['Cube']
+    print (frameRange)
+    for frame in range(0,frameRange):
+        bpy.context.scene.frame_set(frame)
+       
+        print(cube.location)
 
 
 
@@ -44,6 +56,7 @@ class SimpleOperator(bpy.types.Operator):
     def execute(self, context):
         main(context)
         distance(x1,y1,x2,y2)
+        pozicija(context)
         return {'FINISHED'}
 
 
