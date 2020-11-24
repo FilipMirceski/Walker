@@ -20,7 +20,8 @@ y2 =0
 
 def pozicija(context):
     #lista u kom smestamo lokaciju
-    a = []
+    z = []
+    x = []
     #uzimamo duzinu akcije
     frameRange = int(bpy.data.actions['CubeDance'].frame_range[1])
     cube=bpy.data.objects['Cube']
@@ -28,11 +29,14 @@ def pozicija(context):
     #iteracija kroz frejmove i uzimanje lokacije
     for frame in range(0,frameRange):
         bpy.context.scene.frame_set(frame)
-        lokacija = cube.location.z
-        a.append(lokacija)
-    
-    print (lokacija)
-    print (a)
+        lokacija_z = cube.location.z
+        lokacija_x = cube.location.x
+        z.append(lokacija_z)
+        x.append(lokacija_x)
+    print ("z je")
+    print (z)
+    print ("x je")
+    print (x)
     
 
 #funkcija za izracunavanje duzinu koraka
