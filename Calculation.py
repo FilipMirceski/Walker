@@ -10,7 +10,7 @@ def main(context):
     print (a[1][1])
     print ("test niz")
     #x = b.index(3)
-    indexes = [i for i,x in enumerate(b) if x == 3]
+    indexes = [i for i,x in enumerate(b) if x <= 0]
     print (indexes)
 
 x1 = 10
@@ -29,10 +29,12 @@ def pozicija(context):
     #iteracija kroz frejmove i uzimanje lokacije
     for frame in range(0,frameRange):
         bpy.context.scene.frame_set(frame)
-        lokacija_z = cube.location.z
-        lokacija_x = cube.location.x
+        #ver = cube.location.z
+        #hor = cube.location.x
+        #sid = 
         z.append(lokacija_z)
         x.append(lokacija_x)
+
     print ("z je")
     print (z)
     print ("x je")
