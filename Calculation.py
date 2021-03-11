@@ -1,5 +1,6 @@
 import bpy
 import math
+from mathutils import Vector, Quaternion
 
 wlk_collection = 'Novi Test'
 
@@ -22,8 +23,6 @@ def new_collection(name):
     print('Create new collection', name)
    
     return collection
-
- #new_collection(wlk_collection)
 
 
 class SimpleOperator(bpy.types.Operator):
