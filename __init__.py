@@ -11,10 +11,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from . import Walker_UI_Blender
+# from . import Walker_UI_Blender
 #from . import Position
 
-from . import Calculation
+# from . import Calculation
 
 bl_info = {
     "name" : "Walker",
@@ -28,13 +28,15 @@ bl_info = {
 }
 
 def register():
-    Walker_UI_Blender.register()
-    Calculation.register()
+    print("###################### Walker Igor Start")
+    # Walker_UI_Blender.register()
+    # Calculation.register()
     #Position.register()
 
 def unregister():
-    Walker_UI_Blender.unregister()
-    Calculation.unregister()
+    print("###################### Walker Igor Start")
+    # Walker_UI_Blender.unregister()
+    # Calculation.unregister()
     #Position.unregister()
 
 
