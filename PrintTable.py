@@ -1,170 +1,136 @@
-import math
-
 font_colors = ['\033[91m', '\033[92m', '\033[93m', '\033[95m']
 font_reset = '\033[0m'
 font_bold ='\033[1m'
 
-def print_table(data, col_width, highlite):
+def floor(n):
+    res = int(n)
+    return res if res == n or n >= 0 else res-1
 
-    count_rows = len(data)
+def pt_spaces(string, width, highlite, bold):
+    spaces = width - len(string)
+    spaces_l = floor(spaces/2)
+    spaces_r = spaces-spaces_l
+    output = " "*spaces_l+string+" "*spaces_r
+    if string in highlite:
+        output = font_colors[highlite.index(string)]+output+font_reset
+    if bold is True:
+        output = font_bold+output+font_reset
+    return output
 
-    if count_rows == 0:
-        print("Data is empty")
-        return 
+def print_table(data, highlite):
 
-    #  HEADER / Top border
+    # data = [
+    #     {"foot_L":{"mark":"CS", "OPF":0.2, "transf":{"loc":[0,0,0], "rot":[0.4,0.4,0,4], "scale":[0.9,0.9,0.9]} }, "foot_R":{"mark":"CE", "OPF":0.3, "transf":None} },
+    #     {"foot_L":{"mark":"C", "OPF":0.22, "transf":None}, "foot_R":{"mark":"F", "OPF":0, "transf":None} },
+    #     {"foot_L":{"mark":"C", "OPF":0.222, "transf":None}, "foot_R":{"mark":"F", "OPF":0, "transf":None} },
+    #     {"foot_L":{"mark":"C", "OPF":0.22222222, "transf":None}, "foot_R":{"mark":"F", "OPF":0, "transf":{"loc":[0,0,0], "rot":[0.4,0.4,0,4], "scale":[0.9,0.9,0.9]} } }
+    # ]
 
-    rf = []
-    row_content = []
+    ################################################################# Get column widths
 
-    for k, v in data[0].items():
-        if isinstance(v, dict):
-            w = col_width*len(v) + (len(v)-1)
-            rf.append("{:^"+str(w)+"}")
-            row_content.append("═"*w)
-        else:
-            rf.append("{:^"+str(col_width)+"}")
-            row_content.append("═"*col_width)
-
-    row_format ="{:^1}".join(rf)
-    row_format = "{:^1}"+row_format+"{:^1}"
-
-    row_content = sum([[i, "╦"] for i in row_content], [])[:-1]
-    row_content.insert(0,"╔")
-    row_content.append("╗")
-
-    print(row_format.format(*row_content))
-
-    #  HEADER / First row
-
-    row_content = []
-
-    for k, v in data[0].items():
-        if isinstance(v, dict):
-            spaces = col_width*len(v) + (len(v)-1) - len(k)
-            spaces_l = math.floor(spaces/2)
-            row_content.append(" "*spaces_l+font_bold+str(k)+font_reset+" "*(spaces-spaces_l))
-        else:
-            row_content.append(" ")
-
-    row_content = sum([[i, "║"] for i in row_content], [])[:-1]
-    row_content.insert(0,"║")
-    row_content.append("║")
-
-    print(row_format.format(*row_content))
-
-   #  HEADER / Second row
-
-    row_format = "{:^1}"
-    row_content = []
-    row_content.insert(0,"║")
-
-    for k, v in data[0].items():
-        if isinstance(v, dict):
-            tmp_content = []
-            tmp_format = []
-            w = col_width*len(v) + (len(v)-1)
-            for kk, vv in v.items():
-                spaces = col_width - len(kk)
-                spaces_l = math.floor(spaces/2)
-                tmp_content.append(" "*spaces_l+font_bold+str(kk)+font_reset+" "*(spaces-spaces_l))
-                tmp_format.append("{:^"+str(col_width)+"}")
-            tmp_content = sum([[i, "│"] for i in tmp_content], [])[:-1]
-            for tc in tmp_content:
-                row_content.append(tc)
-            row_content.append("║")
-            row_format += "{:^1}".join(tmp_format)
-            row_format += "{:^1}"
-        else:
-            row_content.append(k)
-            row_content.append("║")
-            row_format += "{:^"+str(col_width)+"}"
-            row_format += "{:^1}"
-
-    print(row_format.format(*row_content))
-
-    #  HEADER / Bottom border
-
-    row_content = []
-    row_content.insert(0,"╠")
-
-    for k, v in data[0].items():
-        if isinstance(v, dict):
-            tmp_content = []
-            w = col_width*len(v) + (len(v)-1)
-            for kk, vv in v.items():
-                tmp_content.append("═"*col_width)
-            tmp_content = sum([[i, "╪"] for i in tmp_content], [])[:-1]
-            for tc in tmp_content:
-                row_content.append(tc)
-            row_content.append("╬")
-        else:
-            row_content.append("═"*col_width)
-            row_content.append("╬")
-    row_content[-1] = "╣"
-
-    print(row_format.format(*row_content))
-
-    #  BODY / Data row
-
-    for i, row in enumerate(data):
-
-        row_content = []
-        row_content.insert(0,"║")
-        row_content_bottom = []
-        row_content_bottom.insert(0,"╠")
-        row_content_end = []
-        row_content_end.insert(0,"╚")
-
-        for k, v in row.items():
-            if isinstance(v, dict):
-                tmp_content = []
-                tmp_content_bottom = []
-                tmp_content_end = []
-                w = col_width*len(v) + (len(v)-1)
-                for kk, vv in v.items():
-                    if vv in highlite:
-                        spaces = col_width-len(vv)
-                        spaces_l = math.floor(spaces/2)
-                        tmp_content.append(" "*spaces_l+font_colors[highlite.index(vv)]+str(vv)+font_reset+" "*(spaces-spaces_l))
-                    else:
-                        tmp_content.append(vv)
-                    tmp_content_bottom.append("─"*col_width)
-                    tmp_content_end.append("═"*col_width)
-                tmp_content = sum([[i, "│"] for i in tmp_content], [])[:-1]
-                tmp_content_bottom = sum([[i, "┼"] for i in tmp_content_bottom], [])[:-1]
-                tmp_content_end = sum([[i, "╩"] for i in tmp_content_end], [])[:-1]
-                for tc in tmp_content:
-                    row_content.append(tc)
-                for tcb in tmp_content_bottom:
-                    row_content_bottom.append(tcb)
-                for tce in tmp_content_end:
-                    row_content_end.append(tce)
-                row_content.append("║")
-                row_content_bottom.append("╬")
-                row_content_end.append("╩")
-            else:
-                row_content.append(v)
-                row_content.append("║")
-                row_content_bottom.append("─"*col_width)
-                row_content_bottom.append("║")
-                row_content_end.append("═"*col_width)
-                row_content_end.append("╩")
-        row_content[-1] = "║"
-        row_content_bottom[-1] = "╣"
-        row_content_end[-1] = "╝"
-        print(row_format.format(*row_content))
-        if i < len(data)-1:
-            print(row_format.format(*row_content_bottom))
-        else:
-            print(row_format.format(*row_content_end))
-
-# data = [
-#     {"foot_L":{"mark":"CS", "OPF":0.2}, "foot_R":{"mark":"CE", "OPF":0.2}},
-#     {"foot_L":{"mark":"C", "OPF":0.2}, "foot_R":{"mark":"F", "OPF":0}},
-#     {"foot_L":{"mark":"C", "OPF":0.2}, "foot_R":{"mark":"F", "OPF":0}},
-#     {"foot_L":{"mark":"C", "OPF":0.2}, "foot_R":{"mark":"F", "OPF":0}}
-# ]
+    col_width = {}# {"column name":length}
+    for i, row in enumerate(data):# Iterate all items
+        for k, v in row.items():# Iterate each item keys and values
+            if isinstance(v, dict):# if value is dict
+                for kk, vv in v.items():# Iterate each value for sub-level keys and values
+                    key_len = len(str(kk))# Key name length
+                    value_len = len(str(vv))# Value lenght
+                    # Set longer as max length
+                    max_len = key_len
+                    if isinstance(vv, dict) == False:
+                        if value_len > key_len:
+                            max_len = value_len
+                    else:# If value is dict
+                        for kkk, vvv in vv.items():# Iterate sub-sub-level
+                            string = str(vvv)
+                            item_len = len(string) 
+                            if max_len < item_len:
+                                max_len = item_len 
+                    if kk in col_width:# Update col_width dict new max_len
+                        if col_width[kk] < max_len:
+                            col_width[kk] = max_len
+                    else:# If not existing create item in col_width
+                        col_width[kk]=max_len
 
 
-# print_table(data, 7)
+    ################################################################# Print table header
+
+    rows = []# Rows for printing
+    L1_section=[]# Collect top level data
+    L2_section = []# Collect sub-level data
+    L1_border_top = []# Collect cells border top
+    L2_border_bottom = []# Collect cells border bottom
+    for k, v in data[0].items():# Get keys only from first entry
+        # Width for top level cells
+        width = len(col_width)-1
+        for kk,vv in col_width.items():
+            width += vv
+        L1_section.append(pt_spaces(k, width, highlite,True))# Make data for top level cell
+        L1_border_top.append("═"*width)# Make top level cell upper border
+        L2_cells = []# Reset collection of sub-level data
+        L2_cells_bottom = []# Reset collection of sub-level bottom borders
+        for kk, vv in v.items():# Sub-level
+            width = col_width[kk]# Get cell width
+            L2_cells.append(pt_spaces(kk, width, highlite,True))# Make data for sub-level cell
+            L2_cells_bottom.append("═"*width)# Make sub-level cell bottom border
+        L2_section.append("│".join(L2_cells))# Join section sub-level data
+        L2_border_bottom.append("╪".join(L2_cells_bottom))# Join section sub-level bottom borders
+    rows.append("╔"+"╦".join(L1_border_top)+"╗")
+    rows.append("║"+"║".join(L1_section)+"║")
+    rows.append("║"+"║".join(L2_section)+"║")
+    rows.append("╠"+"╬".join(L2_border_bottom)+"╣")
+    print( "\n".join(rows) )
+
+    
+    ################################################################# Print table body
+
+    rows = []# Rows for printing
+    row_separator=[]
+    for i, row in enumerate(data):# Iterate data items
+        # Check for row_lines, sub-sub levels will be splited in multiple lines
+        row_lines = 1# Init is 1 row
+        for k, v in row.items():# Top level
+            if isinstance(v, dict):# Must be dict
+                for kk, vv in v.items():# Sub Level
+                    if isinstance(vv, dict):# Must be dict
+                        dict_len = len(vv)# Get sub-sub level dict length
+                        if row_lines < dict_len:# If bigger then previous expand row height
+                            row_lines = dict_len
+
+        row_single = []# Reset single row
+        row_separator = ""
+        bottom_border = ""
+        for ii in range(1,row_lines+1):# Iterate row height to add lines per single row for values splited to multiple rows
+            section = []# Reset section
+            if row_separator == "":# Declare it first time
+                section_row_separator = []
+                section_bottom_border = []
+            for k, v in row.items():# Top Level
+                if isinstance(v, dict):# Value must be dict
+                    cells = []# Reset section cells
+                    if row_separator == "":# Declare it first time
+                        cells_separator = []
+                        cells_bottom_border = []
+                    for kk, vv in v.items():# Sub-level
+                        string = " "# Default is empty value
+                        if ii == 1:# For first line always get value
+                            string = str(vv)
+                        if isinstance(vv, dict):# If value is dict use sub-sub-level at index as same as line is
+                            if len(vv) >= ii:# Check if index exists
+                                value = list(vv.items())[ii-1:ii]# Slice from dict
+                                string = str(value[0][1])
+                        width = col_width[kk]
+                        cells.append(pt_spaces(string, width, highlite, False))# Make data for sub level
+                        if row_separator == "":# Declare it first time
+                            cells_separator.append("─"*width)
+                            cells_bottom_border.append("═"*width)
+                    section.append("│".join(cells))# Join section
+                    if row_separator == "":# Declare it first time
+                        section_row_separator.append("┼".join(cells_separator))
+                        section_bottom_border.append("╩".join(cells_bottom_border))
+            row_single.append("║"+"║".join(section)+"║")# Join section lines into single row output
+            if row_separator == "":# Declare it first time
+                row_separator = "\n"+"╠"+"╬".join(section_row_separator)+"╣"+"\n"
+                bottom_border = "\n"+"╚"+"╩".join(section_bottom_border)+"╝"
+        rows.append("\n".join(row_single))# Add single row to rows
+    print( row_separator.join(rows)+bottom_border )

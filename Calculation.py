@@ -110,14 +110,14 @@ class SimpleOperator(bpy.types.Operator):
                     # Get OPF value
                     opf = get_footData_OPF(f, duration, feet_fCurves[foot]['loc_Y'])
             
-                tmp_data[foot]={"frame":f, "mark":mark, "opf":opf}
+                tmp_data[foot]={"mark":mark, "opf":opf}
 
             WLK['wlk01']['data'].append( dict(tmp_data) )
             tmp_data.clear()
 
             f += 1
 
-        PrintTable.print_table(WLK['wlk01']['data'], 9, ["CS","FU"])
+        PrintTable.print_table(WLK['wlk01']['data'], ["CS","FU"])
 
         return {'FINISHED'}
 
