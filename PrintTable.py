@@ -19,6 +19,8 @@ def pt_spaces(string, width, highlite, bold):
 
 def print_table(data, highlite):
 
+    index_colWidth = 3
+
     # data = [
     #     {"foot_L":{"mark":"CS", "OPF":0.2, "transf":{"loc":[0,0,0], "rot":[0.4,0.4,0,4], "scale":[0.9,0.9,0.9]} }, "foot_R":{"mark":"CE", "OPF":0.3, "transf":None} },
     #     {"foot_L":{"mark":"C", "OPF":0.22, "transf":None}, "foot_R":{"mark":"F", "OPF":0, "transf":None} },
@@ -60,6 +62,11 @@ def print_table(data, highlite):
     L2_section = []# Collect sub-level data
     L1_border_top = []# Collect cells border top
     L2_border_bottom = []# Collect cells border bottom
+    # Index
+    L1_section.append(" "*index_colWidth)
+    L2_section.append(" "*index_colWidth)
+    L1_border_top.append("═"*index_colWidth)
+    L2_border_bottom.append("═"*index_colWidth)
     for k, v in data[0].items():# Get keys only from first entry
         # Width for top level cells
         width = len(col_width)-1
@@ -105,6 +112,9 @@ def print_table(data, highlite):
             if row_separator == "":# Declare it first time
                 section_row_separator = []
                 section_bottom_border = []
+                # Add index separator and bottom border
+                section_row_separator.append("─"*index_colWidth)
+                section_bottom_border.append("═"*index_colWidth)
             for k, v in row.items():# Top Level
                 if isinstance(v, dict):# Value must be dict
                     cells = []# Reset section cells
@@ -122,13 +132,15 @@ def print_table(data, highlite):
                         width = col_width[kk]
                         cells.append(pt_spaces(string, width, highlite, False))# Make data for sub level
                         if row_separator == "":# Declare it first time
+                            # Add borders for data cells
                             cells_separator.append("─"*width)
                             cells_bottom_border.append("═"*width)
                     section.append("│".join(cells))# Join section
                     if row_separator == "":# Declare it first time
                         section_row_separator.append("┼".join(cells_separator))
                         section_bottom_border.append("╩".join(cells_bottom_border))
-            row_single.append("║"+"║".join(section)+"║")# Join section lines into single row output
+            index = pt_spaces(str(i+1), index_colWidth, highlite, False)
+            row_single.append("║"+index+"║"+"║".join(section)+"║")# Join section lines into single row output
             if row_separator == "":# Declare it first time
                 row_separator = "\n"+"╠"+"╬".join(section_row_separator)+"╣"+"\n"
                 bottom_border = "\n"+"╚"+"╩".join(section_bottom_border)+"╝"
