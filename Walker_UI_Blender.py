@@ -14,14 +14,13 @@ class View3DPanel:
 
 class PanelOne(View3DPanel, bpy.types.Panel):
     bl_idname = "VIEW3D_PT_test_1"
-    bl_label = "Panel One"
+    bl_label = "Tests"
 
     def draw(self, context):
         layout = self.layout
         scene = context.scene
-        layout.label(text="Small Classssss")
         # layout.prop_search(scene, "walkCycle", bpy.data, "actions", text="Action")
-        layout.operator("object.simple_operator")
+        layout.operator("object.wlk_analyze_walk_cycle")
 
 
 class PanelTwo(View3DPanel, bpy.types.Panel):

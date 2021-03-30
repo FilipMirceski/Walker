@@ -107,7 +107,7 @@ def print_table(data, highlite):
         row_single = []# Reset single row
         row_separator = ""
         bottom_border = ""
-        for ii in range(1,row_lines+1):# Iterate row height to add lines per single row for values splited to multiple rows
+        for li in range(1,row_lines+1):# Iterate row height to add lines per single row for values splited to multiple rows
             section = []# Reset section
             if row_separator == "":# Declare it first time
                 section_row_separator = []
@@ -123,11 +123,11 @@ def print_table(data, highlite):
                         cells_bottom_border = []
                     for kk, vv in v.items():# Sub-level
                         string = " "# Default is empty value
-                        if ii == 1:# For first line always get value
+                        if li == 1:# For first line always get value
                             string = str(vv)
                         if isinstance(vv, dict):# If value is dict use sub-sub-level at index as same as line is
-                            if len(vv) >= ii:# Check if index exists
-                                value = list(vv.items())[ii-1:ii]# Slice from dict
+                            if len(vv) >= li:# Check if index exists
+                                value = list(vv.items())[li-1:li]# Slice from dict
                                 string = str(value[0][1])
                         width = col_width[kk]
                         cells.append(pt_spaces(string, width, highlite, False))# Make data for sub level
@@ -139,7 +139,9 @@ def print_table(data, highlite):
                     if row_separator == "":# Declare it first time
                         section_row_separator.append("┼".join(cells_separator))
                         section_bottom_border.append("╩".join(cells_bottom_border))
-            index = pt_spaces(str(i+1), index_colWidth, highlite, False)
+            index = " "*index_colWidth
+            if li == 1:
+                index = pt_spaces(str(i+1), index_colWidth, highlite, False)
             row_single.append("║"+index+"║"+"║".join(section)+"║")# Join section lines into single row output
             if row_separator == "":# Declare it first time
                 row_separator = "\n"+"╠"+"╬".join(section_row_separator)+"╣"+"\n"
