@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="297mm"
+   height="210mm"
+   viewBox="0 0 297 210"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.0.1 (0767f8302a, 2020-10-17)"
+   sodipodi:docname="code-concept-01.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="237.32006"
+     inkscape:cy="415.57766"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1043"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <text
+       xml:space="preserve"
+       style="font-size:2.82223px;line-height:1.25;font-family:sans-serif;white-space:pre;inline-size:149.424;stroke-width:0.264583"
+       x="6.6780367"
+       y="12.145345"
+       id="text12"><tspan
+         x="6.6780367"
+         y="12.145345"><tspan
+           style="stroke-width:0.264583">Create Helper Collection
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="15.673133"><tspan
+           style="stroke-width:0.264583">
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="19.200921"><tspan
+           style="stroke-width:0.264583">Create Helper Rig
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="22.728709"><tspan
+           style="stroke-width:0.264583">
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="26.256497"><tspan
+           style="stroke-width:0.264583">Create Helper Rig Action
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="29.784286"><tspan
+           style="stroke-width:0.264583">
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="33.312074"><tspan
+           style="stroke-width:0.264583">Create Rig Action
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="36.839862"><tspan
+           style="stroke-width:0.264583">
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="40.367648"><tspan
+           style="stroke-width:0.264583">Create Walk Animation (Walk Cycle x reapeat)
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="43.895434"><tspan
+           style="stroke-width:0.264583">
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="47.423221"><tspan
+           style="stroke-width:0.264583">Create Helper Root
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="50.951007"><tspan
+           style="stroke-width:0.264583">Assing Constrain to Rig's Root to follow Helper Rig Root
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="54.478793"><tspan
+           style="stroke-width:0.264583">
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="58.006579"><tspan
+           style="stroke-width:0.264583">Create Jumpers (helper to jump between target positions for foot)
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="61.534366"><tspan
+           style="stroke-width:0.264583">Assing Constrain for each Rig's Foot to follow Helper Rig Jumper Foot
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="65.062152"><tspan
+           style="stroke-width:0.264583">Create fCurve to Rig's Foot for animation of the influence of jumper
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="68.589938"><tspan
+           style="stroke-width:0.264583">
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="72.117724"><tspan
+           style="stroke-width:0.264583">Generate follow path
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="75.645511"><tspan
+           style="stroke-width:0.264583">
+</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:2.82223px;line-height:1.25;font-family:sans-serif;white-space:pre;inline-size:149.424;stroke-width:0.264583"
+       x="6.6780367"
+       y="12.145345"
+       id="text26"
+       transform="translate(0,89.958338)"><tspan
+         x="6.6780367"
+         y="12.145345"><tspan
+           style="stroke-width:0.264583">Generate Follow Path
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="15.673133"><tspan
+           style="stroke-width:0.264583">
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="19.200921"><tspan
+           style="stroke-width:0.264583">Add follow path constraint on Helper's Root
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="22.728709"><tspan
+           style="stroke-width:0.264583">
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="26.256497"><tspan
+           style="stroke-width:0.264583">Create fCurve to Helper's Root, Follow path constraint - offset, on Helper's Root
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="29.784286"><tspan
+           style="stroke-width:0.264583">
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="33.312074"><tspan
+           style="stroke-width:0.264583">Run through Walk Animation, frame by frame
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="36.839862"><tspan
+           style="stroke-width:0.264583">- Check the state of the foot at current frame, return C, CE, CS
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="40.367648"><tspan
+           style="stroke-width:0.264583">- If C or CE get OPF (Offset per Frame)
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="43.895434"><tspan
+           style="stroke-width:0.264583">- If CS
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="47.423221"><tspan
+           style="stroke-width:0.264583">- - Lock Rig's Foot to jumper, animate influence
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="50.951007"><tspan
+           style="stroke-width:0.264583">- - Place jumper in position of foot
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="54.478793"><tspan
+           style="stroke-width:0.264583">- IF CE release Rig's Foot, animate influence
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="58.006579"><tspan
+           style="stroke-width:0.264583">- Use avearage OPF to set keyframe for Helper's root, follow path offset
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="61.534366"><tspan
+           style="stroke-width:0.264583">- DIRTY FIX FOR JUMPERS
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="65.062152"><tspan
+           style="stroke-width:0.264583">- - On CS, in Helper's Rig, create target root with target foot, to make jumpers targets
+</tspan></tspan><tspan
+         x="6.6780367"
+         y="68.589938"><tspan
+           style="stroke-width:0.264583">- - Animate jumpers to target</tspan></tspan></text>
+  </g>
+</svg>
