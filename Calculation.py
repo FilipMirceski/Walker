@@ -29,7 +29,6 @@ WLK['wlk01']['bones_feet']['foot_ik.R']['loc'] = []
 
 WLK['wlk01']['walk_cycle_data'] = []
 
-
 # GET ACTION DURATION
 def get_actionDuration(action_name):
     action = bpy.data.actions[action_name]
@@ -148,12 +147,44 @@ class WLK_AnalizeWalkCycle(bpy.types.Operator):
 
         return {'FINISHED'}
 
+def get_possibleControlBones(armatureName):
+    terms = ["root", "foot_ik.l", "foot_ik.r"]
+    targetArmature = bpy.data.armatures[armatureName]
+    # Find bones with constraints
+    matching = []
+    for bone in targetArmature.bones:
+        for term in terms:
+            if term in bone.name.lower():
+                matching.append(bone.name)
+    return matching
+
+class WLK_AnalizeArmature(bpy.types.Operator):
+    """Tooltip"""
+    bl_idname = "object.wlk_analyze_armature"
+    bl_label = "Analize Armature"
+
+    def execute(self, context):
+        targetArmature = bpy.context.scene.wlk_targetArmature
+        targetAction = bpy.context.scene.wlk_targetAction
+        print("### WLK / Analize Armature: ", targetArmature, " for Action: ", targetAction)
+
+        # Break if walk cycle action not found
+        if bpy.data.armatures.find(targetArmature) == -1:
+            print("\nWLK Analize Armature / ERROR: Armature not found!")
+            return {'FINISHED'}
+
+        possibleControlles = get_possibleControlBones(targetArmature)
+
+
+        return {'FINISHED'}
 
 def register():
+    bpy.utils.register_class(WLK_AnalizeArmature)
     bpy.utils.register_class(WLK_AnalizeWalkCycle)
     
 
 def unregister():
+    bpy.utils.unregister_class(WLK_AnalizeArmature)
     bpy.utils.unregister_class(WLK_AnalizeWalkCycle)
 
 
