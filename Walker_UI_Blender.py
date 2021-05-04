@@ -1,5 +1,5 @@
 import bpy
-from bpy.props import StringProperty, BoolProperty, IntProperty, CollectionProperty
+from bpy.props import StringProperty, BoolProperty, FloatProperty, IntProperty, EnumProperty, CollectionProperty
 from bpy.types import PropertyGroup, UIList, Operator, Panel
 
 class ListItem(PropertyGroup):
@@ -7,7 +7,36 @@ class ListItem(PropertyGroup):
     foot: StringProperty(
            name="Foot",
            description="Control for foot",
-           default="---")
+           default=" ")
+
+    axisFront: EnumProperty(
+           name="Front Axis",
+           description="Set Front Axis Direction",
+           items=   (('X', 'X', 'X'),  
+                    ('Y', 'Y', 'Y'),  
+                    ('Z', 'Z', 'Z'),
+                    ('-X', '-X', '-X'),  
+                    ('-Y', '-Y', '-Y'),  
+                    ('-Z', '-Z', '-Z')),
+            default='-Y'
+           )
+
+    axisUp: EnumProperty(
+           name="Up Axis",
+           description="Set Up Axis Direction",
+           items=   (('X', 'X', 'X'),  
+                    ('Y', 'Y', 'Y'),  
+                    ('Z', 'Z', 'Z'),
+                    ('-X', '-X', '-X'),  
+                    ('-Y', '-Y', '-Y'),  
+                    ('-Z', '-Z', '-Z')),
+            default='Z'
+           )
+    
+    contactHeight: FloatProperty(
+           name="Contact Height",
+           description="",
+           default=0.0)
 
     useFoot: BoolProperty(
            name="Use",
@@ -25,7 +54,10 @@ class MY_UL_List(UIList):
 
         # Make sure your code supports all 3 layout types
         if self.layout_type in {'DEFAULT', 'COMPACT'}:
-            layout.label(text=item.foot, icon = custom_icon)
+            text = item.foot if item.foot else ' '
+            layout.label(text=text, icon = custom_icon)
+            icon = 'CHECKBOX_HLT' if item.useFoot else 'CHECKBOX_DEHLT'
+            layout.prop(item, "useFoot", text="", icon=icon, emboss=False)
 
         elif self.layout_type in {'GRID'}:
             layout.alignment = 'CENTER'
@@ -102,40 +134,79 @@ class View3DPanel:
 
 class PanelOne(View3DPanel, bpy.types.Panel):
     bl_idname = "VIEW3D_PT_test_1"
+    bl_label = "Params"
+
+    def updateVar(self, value):
+        bpy.context.scene.wlk_targetArmature_prev = value
+
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+
+        layout.prop_search(scene, "wlk_targetArmature", bpy.data, "armatures", text="Armature")
+        layout.prop_search(scene, "wlk_targetAction", bpy.data, "actions", text="Action")
+
+        layout.prop_search(scene, "wlk_root", bpy.data.armatures[scene.wlk_targetArmature], "bones", text="Root")
+
+        layout.label(text="Feet:")
+
+        row = layout.row()
+        row.template_list("MY_UL_List", "The_List", scene,"my_list", scene, "list_index", rows = 2)
+
+        col = row.column(align=True)
+        col.operator('my_list.new_item', text='', icon='ADD')
+        col.operator('my_list.delete_item', text='', icon='REMOVE')
+        col.separator()
+        col.operator('my_list.move_item', text='', icon='TRIA_UP')
+        col.operator('my_list.move_item', text='', icon='TRIA_DOWN')
+
+        if scene.list_index >= 0 and scene.my_list:
+            item = scene.my_list[scene.list_index]
+            row = layout.row()
+            row.prop_search(item, "foot", bpy.data.armatures[scene.wlk_targetArmature], "bones", text="Foot")
+            row.prop(item, "useFoot")
+            layout.prop(item, "axisFront")
+            layout.prop(item, "axisUp")
+            layout.prop(item, "contactHeight")
+
+        layout.separator()
+
+
+
+class PanelTwo(View3DPanel, bpy.types.Panel):
+    bl_idname = "VIEW3D_PT_test_2"
     bl_label = "Tests"
 
     def draw(self, context):
         layout = self.layout
         scene = context.scene
-        # layout.prop_search(scene, "walkCycle", bpy.data, "actions", text="Action")
-        layout.prop_search(scene, "wlk_targetArmature", bpy.data, "armatures", text="Armature")
-        layout.prop_search(scene, "wlk_targetAction", bpy.data, "actions", text="Action")
-
-        layout.label(text="Feet:")
-        
-        layout.template_list("MY_UL_List", "The_List", scene,"my_list", scene, "list_index")
-
-        row = layout.row()
-        row.operator('my_list.new_item', text='New')
-        row.operator('my_list.delete_item', text='Remove')
-        row.operator('my_list.move_item', text='Up').direction = 'UP'
-        row.operator('my_list.move_item', text='Down').direction = 'DOWN'
-        if scene.list_index >= 0 and scene.my_list:
-            item = scene.my_list[scene.list_index]
-            row = layout.row()
-            row.prop_search(item, "foot", bpy.data.armatures[bpy.context.scene.wlk_targetArmature], "bones", text="Bone")
-            row.prop(item, "useFoot")
 
         layout.operator("object.wlk_analyze_armature")
         layout.operator("object.wlk_analyze_walk_cycle")
 
-
-class PanelTwo(View3DPanel, bpy.types.Panel):
-    bl_idname = "VIEW3D_PT_test_2"
-    bl_label = "Panel Two"
-
-    def draw(self, context):
-        self.layout.label(text="Also Small Class")
+def update_targetArmature(self, context):
+    print("CHANGED")
+    terms = ["root", "foot_ik.l", "foot_ik.r"]
+    targetArmature = bpy.data.armatures[bpy.context.scene.wlk_targetArmature]
+    # Find bones with matching name
+    matching = []
+    for bone in targetArmature.bones:
+        for term in terms:
+            if term in bone.name.lower():
+                matching.append(bone.name)
+    # Remove old 
+    i = len(bpy.context.scene.my_list)
+    while i >= 0:
+        bpy.context.scene.my_list.remove(i)
+        i-=1
+    bpy.context.scene.list_index = 0
+    # Create new
+    for item in matching:
+        if "root" in item:
+            bpy.context.scene.wlk_root = item
+        if "foot" in item:
+            bpy.context.scene.my_list.add()
+            bpy.context.scene.my_list[-1].foot = item
 
 
 def register():
@@ -147,9 +218,9 @@ def register():
     bpy.utils.register_class(LIST_OT_DeleteItem)
     bpy.utils.register_class(LIST_OT_MoveItem)
 
-    bpy.types.Scene.wlk_targetArmature = bpy.props.StringProperty()
+    bpy.types.Scene.wlk_targetArmature = bpy.props.StringProperty(update=update_targetArmature)
     bpy.types.Scene.wlk_targetAction = bpy.props.StringProperty()
-    bpy.types.Scene.wlk_legsCount = bpy.props.IntProperty(name='Legs Count', default=1, min=1)
+    bpy.types.Scene.wlk_root = bpy.props.StringProperty()
 
     bpy.types.Scene.my_list = CollectionProperty(type = ListItem)
     bpy.types.Scene.list_index = IntProperty(name = "Index for my_list",default = 0)
@@ -165,7 +236,7 @@ def unregister():
 
     del bpy.types.Scene.wlk_targetArmature
     del bpy.types.Scene.wlk_targetAction
-    del bpy.types.Scene.wlk_legsCount
+    del bpy.types.Scene.wlk_root
     del bpy.types.Scene.my_list
     del bpy.types.Scene.list_index
 

@@ -147,16 +147,6 @@ class WLK_AnalizeWalkCycle(bpy.types.Operator):
 
         return {'FINISHED'}
 
-def get_possibleControlBones(armatureName):
-    terms = ["root", "foot_ik.l", "foot_ik.r"]
-    targetArmature = bpy.data.armatures[armatureName]
-    # Find bones with constraints
-    matching = []
-    for bone in targetArmature.bones:
-        for term in terms:
-            if term in bone.name.lower():
-                matching.append(bone.name)
-    return matching
 
 class WLK_AnalizeArmature(bpy.types.Operator):
     """Tooltip"""
@@ -172,8 +162,6 @@ class WLK_AnalizeArmature(bpy.types.Operator):
         if bpy.data.armatures.find(targetArmature) == -1:
             print("\nWLK Analize Armature / ERROR: Armature not found!")
             return {'FINISHED'}
-
-        possibleControlles = get_possibleControlBones(targetArmature)
 
 
         return {'FINISHED'}
