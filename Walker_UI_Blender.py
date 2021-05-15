@@ -261,8 +261,11 @@ class WLK_PT_Config(WLK_Panels, bpy.types.Panel):
         row = layout.row()
         row.prop(scene, "wlk_ui_root", text="")
         col = row.column(align=True)
-        if len(activeBones) == 0:
+        if activeBones is None:
             col.enabled=False
+        else:
+            if len(activeBones) == 0:
+                col.enabled=False
         col.operator('wlk_ui_root.new', text='Add Selected', icon='ADD')
 
 
@@ -277,8 +280,11 @@ class WLK_PT_Config(WLK_Panels, bpy.types.Panel):
         
 
         row = layout.row()
-        if len(activeBones) == 0:
+        if activeBones is None:
             row.enabled=False
+        else:
+            if len(activeBones) == 0:
+                row`.enabled=False
         row.operator('wlk_ui_ul_feet_list.new', text='Add Selected', icon='ADD')
 
         layout.separator()
