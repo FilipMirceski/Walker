@@ -284,7 +284,7 @@ class WLK_PT_Config(WLK_Panels, bpy.types.Panel):
             row.enabled=False
         else:
             if len(activeBones) == 0:
-                row`.enabled=False
+                row.enabled=False
         row.operator('wlk_ui_ul_feet_list.new', text='Add Selected', icon='ADD')
 
         layout.separator()
