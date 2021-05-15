@@ -2,127 +2,235 @@ import bpy
 from bpy.props import StringProperty, BoolProperty, FloatProperty, IntProperty, EnumProperty, CollectionProperty
 from bpy.types import PropertyGroup, UIList, Operator, Panel
 
-class ListItem(PropertyGroup):
 
-    foot: StringProperty(
-           name="Foot",
-           description="Control for foot",
-           default=" ")
+class WLK_UI_Root_New(Operator):
 
-    axisFront: EnumProperty(
-           name="Front Axis",
-           description="Set Front Axis Direction",
-           items=   (('X', 'X', 'X'),  
-                    ('Y', 'Y', 'Y'),  
-                    ('Z', 'Z', 'Z'),
-                    ('-X', '-X', '-X'),  
-                    ('-Y', '-Y', '-Y'),  
-                    ('-Z', '-Z', '-Z')),
-            default='-Y'
-           )
+    bl_idname = "wlk_ui_root.new"
+    bl_label = "Add root bone"
 
-    axisUp: EnumProperty(
-           name="Up Axis",
-           description="Set Up Axis Direction",
-           items=   (('X', 'X', 'X'),  
-                    ('Y', 'Y', 'Y'),  
-                    ('Z', 'Z', 'Z'),
-                    ('-X', '-X', '-X'),  
-                    ('-Y', '-Y', '-Y'),  
-                    ('-Z', '-Z', '-Z')),
-            default='Z'
-           )
+    def execute(self, context):
+
+        boneName = bpy.context.selected_pose_bones_from_active_object[-1].name
+
+        if context.scene.wlk_ui_root != boneName:
+            context.scene.wlk_ui_root = boneName
+
+        return{'FINISHED'}
+
+
+#####################################################
+##
+## WALKS UI LIST
+
+class WLK_UI_UL_Walks_List(PropertyGroup):
+
+    walkName: StringProperty(
+           name="Name",
+           description="Walk Name",
+           default="My Walk")
+
+    actionName: StringProperty(
+           name="Cycle Action Name",
+           description="Cycle Action Name",
+           default="")
+
+    startFrame: IntProperty(
+           name="Start Frame",
+           description="Start Frame",
+           default=0)
     
-    contactHeight: FloatProperty(
-           name="Contact Height",
-           description="",
-           default=0.0)
+    repeat: IntProperty(
+           name="Repeat Cycle",
+           description="Repeat Cycle",
+           default=1,
+           soft_min=1)
 
-    useFoot: BoolProperty(
-           name="Use",
-           description="Use foot in sims",
-           options=set(),
-           default=True)
-
-class MY_UL_List(UIList):
+class WLK_UI_UL_Walks(UIList):
 
     def draw_item(self, context, layout, data, item, icon, active_data,
                   active_propname, index):
 
-        # We could write some code to decide which icon to use here...
-        custom_icon = 'BONE_DATA'
-
         # Make sure your code supports all 3 layout types
         if self.layout_type in {'DEFAULT', 'COMPACT'}:
-            text = item.foot if item.foot else ' '
-            layout.label(text=text, icon = custom_icon)
-            icon = 'CHECKBOX_HLT' if item.useFoot else 'CHECKBOX_DEHLT'
-            layout.prop(item, "useFoot", text="", icon=icon, emboss=False)
+            text = item.walkName if item.walkName else ' '
+            layout.label(text=text)
 
         elif self.layout_type in {'GRID'}:
             layout.alignment = 'CENTER'
-            layout.label(text="", icon = custom_icon)
+            layout.label(text="")
 
-class LIST_OT_NewItem(Operator):
+class WLK_UI_OT_Walks_New(Operator):
 
-    bl_idname = "my_list.new_item"
+    bl_idname = "wlk_ui_ul_walks_list.new"
     bl_label = "Add a new item"
 
     def execute(self, context):
-        context.scene.my_list.add()
+
+        context.scene.wlk_ui_ul_walks_list.add()
+        context.scene.wlk_ui_ul_walks_list_index = len(context.scene.wlk_ui_ul_walks_list)-1
 
         return{'FINISHED'}
 
-class LIST_OT_DeleteItem(Operator):
+class WLK_UI_OT_Walks_Delete(Operator):
 
-    bl_idname = "my_list.delete_item"
+    bl_idname = "wlk_ui_ul_walks_list.delete"
     bl_label = "Deletes an item"
 
     @classmethod
     def poll(cls, context):
-        return context.scene.my_list
+        return context.scene.wlk_ui_ul_walks_list
 
     def execute(self, context):
-        my_list = context.scene.my_list
-        index = context.scene.list_index
+        myList = context.scene.wlk_ui_ul_walks_list
+        index = context.scene.wlk_ui_ul_walks_list_index
 
-        my_list.remove(index)
-        context.scene.list_index = min(max(0, index - 1), len(my_list) - 1)
+        myList.remove(index)
+        context.scene.wlk_ui_ul_walks_list_index = min(max(0, index - 1), len(myList) - 1)
 
         return{'FINISHED'}
 
-class LIST_OT_MoveItem(Operator):
+class WLK_UI_OT_Walks_Move(Operator):
 
-    bl_idname = "my_list.move_item"
+    bl_idname = "wlk_ui_ul_walks_list.move"
     bl_label = "Move an item in the list"
 
-    direction = bpy.props.EnumProperty(items=(('UP', 'Up', ""),
+    direction: bpy.props.EnumProperty(items=(('UP', 'Up', ""),
                                               ('DOWN', 'Down', ""),))
 
     @classmethod
     def poll(cls, context):
-        return context.scene.my_list
+        return context.scene.wlk_ui_ul_walks_list
 
     def move_index(self):
         """ Move index of an item render queue while clamping it. """
 
-        index = bpy.context.scene.list_index
-        list_length = len(bpy.context.scene.my_list) - 1  # (index starts at 0)
+        index = bpy.context.scene.wlk_ui_ul_walks_list_index
+        list_length = len(bpy.context.scene.wlk_ui_ul_walks_list) - 1  # (index starts at 0)
         new_index = index + (-1 if self.direction == 'UP' else 1)
 
-        bpy.context.scene.list_index = max(0, min(new_index, list_length))
+        bpy.context.scene.wlk_ui_ul_walks_list_index = max(0, min(new_index, list_length))
 
     def execute(self, context):
-        my_list = context.scene.my_list
-        index = context.scene.list_index
+        wlk_ui_ul_walks_list = context.scene.wlk_ui_ul_walks_list
+        index = context.scene.wlk_ui_ul_walks_list_index
 
         neighbor = index + (-1 if self.direction == 'UP' else 1)
-        my_list.move(neighbor, index)
+        wlk_ui_ul_walks_list.move(neighbor, index)
         self.move_index()
 
         return{'FINISHED'}
 
-class View3DPanel:
+
+## WALK UI LIST
+##
+#######################################################
+
+
+##################################################################
+##
+## FEET UI LIST
+
+class WLK_UI_UL_Feet_List(PropertyGroup):
+
+    footName: StringProperty(
+           name="Foot Name",
+           description="Control for foot",
+           default=" ")
+
+class WLK_UI_UL_Feet(UIList):
+
+    def draw_item(self, context, layout, data, item, icon, active_data,
+                  active_propname, index):
+
+        # Make sure your code supports all 3 layout types
+        if self.layout_type in {'DEFAULT', 'COMPACT'}:
+            text = item.footName if item.footName else ' '
+            layout.label(text=text)
+
+        elif self.layout_type in {'GRID'}:
+            layout.alignment = 'CENTER'
+            layout.label(text="")
+
+class WLK_UI_OT_Feet_New(Operator):
+
+    bl_idname = "wlk_ui_ul_feet_list.new"
+    bl_label = "Add a new item"
+
+    def execute(self, context):
+
+        myList = context.scene.wlk_ui_ul_feet_list
+        activeBones = bpy.context.selected_pose_bones_from_active_object
+
+        for bone in activeBones:
+            isExists = False
+            for item in myList:
+                if bone.name == item.footName:
+                    isExists = True
+            if isExists == False:
+                myList.add()
+                myList[-1].footName = bone.name
+
+        return{'FINISHED'}
+
+class WLK_UI_OT_Feet_Delete(Operator):
+
+    bl_idname = "wlk_ui_ul_feet_list.delete"
+    bl_label = "Deletes an item"
+
+    @classmethod
+    def poll(cls, context):
+        return context.scene.wlk_ui_ul_feet_list
+
+    def execute(self, context):
+        wlk_ui_ul_feet_list = context.scene.wlk_ui_ul_feet_list
+        index = context.scene.wlk_ui_ul_feet_list_index
+
+        wlk_ui_ul_feet_list.remove(index)
+        context.scene.wlk_ui_ul_feet_list_index = min(max(0, index - 1), len(wlk_ui_ul_feet_list) - 1)
+
+        return{'FINISHED'}
+
+class WLK_UI_OT_Feet_Move(Operator):
+
+    bl_idname = "wlk_ui_ul_feet_list.move"
+    bl_label = "Move an item in the list"
+
+    direction: bpy.props.EnumProperty(items=(('UP', 'Up', ""),
+                                              ('DOWN', 'Down', ""),))
+
+    @classmethod
+    def poll(cls, context):
+        return context.scene.wlk_ui_ul_feet_list
+
+    def move_index(self):
+        """ Move index of an item render queue while clamping it. """
+
+        index = bpy.context.scene.wlk_ui_ul_feet_list_index
+        list_length = len(bpy.context.scene.wlk_ui_ul_feet_list) - 1  # (index starts at 0)
+        new_index = index + (-1 if self.direction == 'UP' else 1)
+
+        bpy.context.scene.wlk_ui_ul_feet_list_index = max(0, min(new_index, list_length))
+
+    def execute(self, context):
+        wlk_ui_ul_feet_list = context.scene.wlk_ui_ul_feet_list
+        index = context.scene.wlk_ui_ul_feet_list_index
+
+        neighbor = index + (-1 if self.direction == 'UP' else 1)
+        wlk_ui_ul_feet_list.move(neighbor, index)
+        self.move_index()
+
+        return{'FINISHED'}
+
+## FEET UI LIST
+##
+#######################################################
+
+
+#######################################################
+##
+## PANELS
+
+class WLK_Panels:
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = "Walker"
@@ -132,113 +240,132 @@ class View3DPanel:
         return (context.object is not None)
 
 
-class PanelOne(View3DPanel, bpy.types.Panel):
-    bl_idname = "VIEW3D_PT_test_1"
-    bl_label = "Params"
-
-    def updateVar(self, value):
-        bpy.context.scene.wlk_targetArmature_prev = value
+class WLK_PT_Config(WLK_Panels, bpy.types.Panel):
+    bl_label = "Config Rig"
 
     def draw(self, context):
+
         layout = self.layout
         scene = context.scene
+        activeObj = bpy.context.active_object
+        activeBones = bpy.context.selected_pose_bones_from_active_object
 
-        layout.prop_search(scene, "wlk_targetArmature", bpy.data, "armatures", text="Armature")
-        layout.prop_search(scene, "wlk_targetAction", bpy.data, "actions", text="Action")
+        if activeObj.type != 'ARMATURE':
+            layout.label(text="Must select armature object.", icon="ERROR")
+            return False
 
-        layout.prop_search(scene, "wlk_root", bpy.data.armatures[scene.wlk_targetArmature], "bones", text="Root")
+        layout.label(text=activeObj.name, icon="ARMATURE_DATA")
+
+        
+        layout.label(text="Root:")
+        row = layout.row()
+        row.prop(scene, "wlk_ui_root", text="")
+        col = row.column(align=True)
+        if len(activeBones) == 0:
+            col.enabled=False
+        col.operator('wlk_ui_root.new', text='Add Selected', icon='ADD')
+
 
         layout.label(text="Feet:")
+        row = layout.row()
+        row.template_list("WLK_UI_UL_Feet", "Feet", scene,"wlk_ui_ul_feet_list", scene, "wlk_ui_ul_feet_list_index", rows = 4)
+        col = row.column(align=True)
+        col.operator('wlk_ui_ul_feet_list.delete', text='', icon='REMOVE')
+        col.separator()
+        col.operator('wlk_ui_ul_feet_list.move', text='', icon='TRIA_UP').direction = 'UP'
+        col.operator('wlk_ui_ul_feet_list.move', text='', icon='TRIA_DOWN').direction = 'DOWN'
+        
 
         row = layout.row()
-        row.template_list("MY_UL_List", "The_List", scene,"my_list", scene, "list_index", rows = 2)
-
-        col = row.column(align=True)
-        col.operator('my_list.new_item', text='', icon='ADD')
-        col.operator('my_list.delete_item', text='', icon='REMOVE')
-        col.separator()
-        col.operator('my_list.move_item', text='', icon='TRIA_UP')
-        col.operator('my_list.move_item', text='', icon='TRIA_DOWN')
-
-        if scene.list_index >= 0 and scene.my_list:
-            item = scene.my_list[scene.list_index]
-            row = layout.row()
-            row.prop_search(item, "foot", bpy.data.armatures[scene.wlk_targetArmature], "bones", text="Foot")
-            row.prop(item, "useFoot")
-            layout.prop(item, "axisFront")
-            layout.prop(item, "axisUp")
-            layout.prop(item, "contactHeight")
+        if len(activeBones) == 0:
+            row.enabled=False
+        row.operator('wlk_ui_ul_feet_list.new', text='Add Selected', icon='ADD')
 
         layout.separator()
 
 
 
-class PanelTwo(View3DPanel, bpy.types.Panel):
-    bl_idname = "VIEW3D_PT_test_2"
-    bl_label = "Tests"
+class WLK_PT_Walks(WLK_Panels, bpy.types.Panel):
+    bl_label = "Walks"
 
     def draw(self, context):
         layout = self.layout
         scene = context.scene
+        activeObj = bpy.context.active_object
 
-        layout.operator("object.wlk_analyze_armature")
-        layout.operator("object.wlk_analyze_walk_cycle")
+        row = layout.row()
+        row.template_list("WLK_UI_UL_Walks", "Walks", scene,"wlk_ui_ul_walks_list", scene, "wlk_ui_ul_walks_list_index", rows = 4)
+        col = row.column(align=True)
+        col.operator('wlk_ui_ul_walks_list.new', text='', icon='ADD')
+        col.operator('wlk_ui_ul_walks_list.delete', text='', icon='REMOVE')
+        col.separator()
+        col.operator('wlk_ui_ul_walks_list.move', text='', icon='TRIA_UP').direction = 'UP'
+        col.operator('wlk_ui_ul_walks_list.move', text='', icon='TRIA_DOWN').direction = 'DOWN'
+        if scene.wlk_ui_ul_walks_list_index >=0:
+            item = scene.wlk_ui_ul_walks_list[scene.wlk_ui_ul_walks_list_index]
+            row = layout.row()
+            row.prop(item, "walkName")
+            row = layout.row()
+            row.prop_search(item, "actionName", bpy.data, "actions", text="Action")
+            row = layout.row()
+            row.prop(item, "startFrame")
+            row = layout.row()
+            row.prop(item, "repeat")
+            layout.separator()
+            row = layout.row()
+            row.scale_y = 2
+            row.operator("object.wlk_analyze_armature")
+            row = layout.row()
+            row.scale_y = 2
+            row.operator("object.wlk_analyze_walk_cycle")
 
-def update_targetArmature(self, context):
-    print("CHANGED")
-    terms = ["root", "foot_ik.l", "foot_ik.r"]
-    targetArmature = bpy.data.armatures[bpy.context.scene.wlk_targetArmature]
-    # Find bones with matching name
-    matching = []
-    for bone in targetArmature.bones:
-        for term in terms:
-            if term in bone.name.lower():
-                matching.append(bone.name)
-    # Remove old 
-    i = len(bpy.context.scene.my_list)
-    while i >= 0:
-        bpy.context.scene.my_list.remove(i)
-        i-=1
-    bpy.context.scene.list_index = 0
-    # Create new
-    for item in matching:
-        if "root" in item:
-            bpy.context.scene.wlk_root = item
-        if "foot" in item:
-            bpy.context.scene.my_list.add()
-            bpy.context.scene.my_list[-1].foot = item
+
+## PANELS
+##
+##########################################################
 
 
 def register():
-    bpy.utils.register_class(PanelOne)
-    bpy.utils.register_class(PanelTwo)
-    bpy.utils.register_class(ListItem)
-    bpy.utils.register_class(MY_UL_List)
-    bpy.utils.register_class(LIST_OT_NewItem)
-    bpy.utils.register_class(LIST_OT_DeleteItem)
-    bpy.utils.register_class(LIST_OT_MoveItem)
+    bpy.utils.register_class(WLK_PT_Config)
+    bpy.utils.register_class(WLK_PT_Walks)
+    bpy.utils.register_class(WLK_UI_Root_New)
+    bpy.utils.register_class(WLK_UI_UL_Feet_List)
+    bpy.utils.register_class(WLK_UI_UL_Feet)
+    bpy.utils.register_class(WLK_UI_OT_Feet_New)
+    bpy.utils.register_class(WLK_UI_OT_Feet_Delete)
+    bpy.utils.register_class(WLK_UI_OT_Feet_Move)
+    bpy.utils.register_class(WLK_UI_UL_Walks_List)
+    bpy.utils.register_class(WLK_UI_UL_Walks)
+    bpy.utils.register_class(WLK_UI_OT_Walks_New)
+    bpy.utils.register_class(WLK_UI_OT_Walks_Delete)
+    bpy.utils.register_class(WLK_UI_OT_Walks_Move)
 
-    bpy.types.Scene.wlk_targetArmature = bpy.props.StringProperty(update=update_targetArmature)
-    bpy.types.Scene.wlk_targetAction = bpy.props.StringProperty()
-    bpy.types.Scene.wlk_root = bpy.props.StringProperty()
-
-    bpy.types.Scene.my_list = CollectionProperty(type = ListItem)
-    bpy.types.Scene.list_index = IntProperty(name = "Index for my_list",default = 0)
+    bpy.types.Scene.wlk_ui_root = bpy.props.StringProperty()
+    bpy.types.Scene.wlk_ui_ul_feet_list = CollectionProperty(type = WLK_UI_UL_Feet_List)
+    bpy.types.Scene.wlk_ui_ul_feet_list_index = IntProperty(name = "Index for wlk_ui_ul_feet_list",default = 0)
+    bpy.types.Scene.wlk_ui_ul_walks_list = CollectionProperty(type = WLK_UI_UL_Walks_List)
+    bpy.types.Scene.wlk_ui_ul_walks_list_index = IntProperty(name = "Index for wlk_ui_ul_walks_list",default = 0)
 
 def unregister():
-    bpy.utils.unregister_class(PanelOne)
-    bpy.utils.unregister_class(PanelTwo)
-    bpy.utils.unregister_class(ListItem)
-    bpy.utils.unregister_class(MY_UL_List)
-    bpy.utils.unregister_class(LIST_OT_NewItem)
-    bpy.utils.unregister_class(LIST_OT_DeleteItem)
-    bpy.utils.unregister_class(LIST_OT_MoveItem)
+    bpy.utils.unregister_class(WLK_PT_Config)
+    bpy.utils.unregister_class(WLK_PT_Walks)
+    bpy.utils.unregister_class(WLK_UI_Root_New)
+    bpy.utils.unregister_class(WLK_UI_UL_Feet_List)
+    bpy.utils.unregister_class(WLK_UI_UL_Feet)
+    bpy.utils.unregister_class(WLK_UI_OT_Feet_New)
+    bpy.utils.unregister_class(WLK_UI_OT_Feet_Delete)
+    bpy.utils.unregister_class(WLK_UI_OT_Feet_Move)
+    bpy.utils.unregister_class(WLK_UI_UL_Walks_List)
+    bpy.utils.unregister_class(WLK_UI_UL_Walks)
+    bpy.utils.unregister_class(WLK_UI_OT_Walks_New)
+    bpy.utils.unregister_class(WLK_UI_OT_Walks_Delete)
+    bpy.utils.unregister_class(WLK_UI_OT_Walks_Move)
 
-    del bpy.types.Scene.wlk_targetArmature
-    del bpy.types.Scene.wlk_targetAction
-    del bpy.types.Scene.wlk_root
-    del bpy.types.Scene.my_list
-    del bpy.types.Scene.list_index
+    del bpy.types.Scene.wlk_ui_root
+    del bpy.types.Scene.wlk_ui_ul_feet_list
+    del bpy.types.Scene.wlk_ui_ul_feet_list_index
+    del bpy.types.Scene.wlk_ui_ul_walks_list
+    del bpy.types.Scene.wlk_ui_ul_walks_list_index
 
 
 if __name__ == "__main__":
