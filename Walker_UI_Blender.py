@@ -306,7 +306,7 @@ class WLK_PT_Walks(WLK_Panels, bpy.types.Panel):
             row = layout.row()
             row.prop(item, "walkName")
             row = layout.row()
-            row.prop_search(item, "actionName", bpy.data, "actions", text="Action")
+            row.prop_search(item, "actionName", bpy.data, "actions", text="Cycle")
             row = layout.row()
             row.prop(item, "startFrame")
             row = layout.row()
