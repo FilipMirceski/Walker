@@ -34,6 +34,16 @@ class WLK_UI_UL_Walks_List(PropertyGroup):
            description="Cycle Action Name",
            default="")
 
+    pathName: StringProperty(
+           name="Path Name",
+           description="Path Name",
+           default="")
+
+    floorName: StringProperty(
+           name="Floor Name",
+           description="Floor Name",
+           default="")
+
     startFrame: IntProperty(
            name="Start Frame",
            description="Start Frame",
@@ -314,13 +324,14 @@ class WLK_PT_Walks(WLK_Panels, bpy.types.Panel):
             row = layout.row()
             row.prop_search(item, "actionName", bpy.data, "actions", text="Cycle")
             row = layout.row()
+            row.prop_search(item, "pathName", bpy.data, "curves", text="Path")
+            row = layout.row()
+            row.prop_search(item, "floorName", bpy.data, "objects", text="Floor")
+            row = layout.row()
             row.prop(item, "startFrame")
             row = layout.row()
             row.prop(item, "repeat")
             layout.separator()
-            row = layout.row()
-            row.scale_y = 2
-            row.operator("object.wlk_analyze_armature")
             row = layout.row()
             row.scale_y = 2
             row.operator("object.wlk_analyze_walk_cycle")
